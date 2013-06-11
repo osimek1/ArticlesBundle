@@ -1,0 +1,24 @@
+{
+    "name": "osimek1/articles-bundle",
+    "type": "symfony-bundle",
+    "description": "Articles Bundle for symfony 2",
+    "keywords": ["articles", "translatable"],
+    "homepage": "http://osimowicz.eu/ArticlesBundle",
+    "license": "MIT",
+	"authors": [
+        {
+            "name": "Grzegorz Osimowicz",
+            "email": "grzegorz@osimowicz.eu"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "symfony/symfony" : ">=2.1,<2.3"
+    },
+    "autoload": {
+        "psr-0": {
+            "Osimek1\\ArticlesBundle\\": ""
+        }
+    },
+    "target-dir" : "Osimek1/ArticlesBundle"
+}
