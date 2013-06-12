@@ -4,8 +4,7 @@ namespace Osimek1\ArticlesBundle\Model;
 
 class ArticleManager
 {
-	public function createArticle()
-	{
-		
-	}
+    public function createArticle()
+    {
+    }
 }

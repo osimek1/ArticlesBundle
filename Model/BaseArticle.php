@@ -14,86 +14,85 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 abstract class BaseArticle implements ArticleInterface
 {
-	/**
-	 * @var string
-	 */
-	protected $title;
-	
-	/**
-	 * @var string
-	 * @ORM\Column(type="string", length=255)
-	 * @Assert\MaxLength(255)
-	 */
-	protected $shortDesc;
-	
-	/**
-	 * @var string
-	 * @ORM\Column(type="text")
-	 */
-	protected $articleContent;	
-	
-	/**
-	 * @var string
-	 * @ORM\Column(type="string", length=255)
-	 */
-	protected $slug;
-	
-	/**
+    /**
+     * @var string
+     */
+    protected $title;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", length=255)
+     * @Assert\MaxLength(255)
+     */
+    protected $shortDesc;
+
+    /**
+     * @var string
+     * @ORM\Column(type="text")
+     */
+    protected $articleContent;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", length=255)
+     */
+    protected $slug;
+
+    /**
      * {@inheritDoc}
      */
-	public function getTitle()
-	{
-		return $this->title;
-	}
-	
-	/**
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
      * {@inheritDoc}
      */
-	public function setTitle($title)
-	{
-		$this->title = $title;
-		
-		return $this;
-	}
-	
-	/**
+    public function setTitle($title)
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    /**
      * {@inheritDoc}
      */
-	public function getShortDesc()
-	{
-		return $this->shortDesc;
-	}
-	
-	/**
+    public function getShortDesc()
+    {
+        return $this->shortDesc;
+    }
+
+    /**
      * {@inheritDoc}
      */
-	public function setShortDesc($shortDesc)
-	{
-		$this->shortDesc = $shortDesc;
-		
-		return $this;
-	}
-	
-	/**
+    public function setShortDesc($shortDesc)
+    {
+        $this->shortDesc = $shortDesc;
+
+        return $this;
+    }
+    
+    /**
      * {@inheritDoc}
      */
-	public function getArticleContent()
-	{
-		return $this->articleContent;
-	}
-	
-	/**
+    public function getArticleContent()
+    {
+        return $this->articleContent;
+    }
+    
+    /**
      * {@inheritDoc}
      */
-	public function setArticleContent($articleContent)
-	{
-		$this->articleContent = $articleContent;
-		
-		return $this;
-	}	
-	
-	public function getSlug()
-	{
-		return $this->slug;
-	}
+    public function setArticleContent($articleContent)
+    {
+        $this->articleContent = $articleContent;
+        return $this;
+    }
+
+    public function getSlug()
+    {
+        return $this->slug;
+    }
 }
