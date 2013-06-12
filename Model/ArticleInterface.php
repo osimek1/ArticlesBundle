@@ -14,10 +14,6 @@ interface ArticleInterface
 	 */
 	public function getShortDesc();
 	
-	/**
-	 * @return string
-	 */
-	public function getShortDesc();
 	
 	/**
 	 * @return string
@@ -44,4 +40,9 @@ interface ArticleInterface
 	 * @return ArticleInterface
 	 */
 	public function setArticleContent($articleContent);
+	
+	/**
+	 * @return string	 
+	 */
+	public function getSlug();
 }

@@ -2,14 +2,17 @@
 
 namespace Osimek1\ArticlesBundle\Model;
 
-use Doctrine\Common\Collections\ArrayCollection
+
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Abstract class of translatable article
+ * Abstract class of base article
  *
  * @author Grzegorz Osimowicz <osimek1@gmail.com>
  */
-abstract class TranslatableArticle implements ArticleInterface
+abstract class BaseArticle implements ArticleInterface
 {
 	/**
 	 * @var string
@@ -18,18 +21,22 @@ abstract class TranslatableArticle implements ArticleInterface
 	
 	/**
 	 * @var string
+	 * @ORM\Column(type="string", length=255)
+	 * @Assert\MaxLength(255)
 	 */
 	protected $shortDesc;
 	
 	/**
 	 * @var string
+	 * @ORM\Column(type="text")
 	 */
-	protected $articleContent;
+	protected $articleContent;	
 	
 	/**
-	 * @var ArrayCollection
+	 * @var string
+	 * @ORM\Column(type="string", length=255)
 	 */
-	protected $translations;
+	protected $slug;
 	
 	/**
      * {@inheritDoc}
@@ -83,34 +90,10 @@ abstract class TranslatableArticle implements ArticleInterface
 		$this->articleContent = $articleContent;
 		
 		return $this;
-	}
+	}	
 	
-	/**
-	 * @return 
-	 */
-	public function getTranslations()
+	public function getSlug()
 	{
-		return this->translations;
-	}
-	
-	/**
-	 * @param ArticleTranslation $tanslation
-	 *
-	 * @return TranslatableArticle
-	 */
-	public function addTranslation(ArticleTranslation $tanslation)
-	{
-		$this->translations[$translation->getLocale()] = $translation;
-		
-		return $this;
-	}
-	
-	/**
-	 * @param string $locale
-	 * @return ArticleTranslation
-	 */
-	public function getAtranslation($locale)
-	{
-		return $this->translations[$locale];
+		return $this->slug;
 	}
 }
