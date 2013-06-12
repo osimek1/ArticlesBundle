@@ -43,7 +43,7 @@ abstract class BaseArticle implements ArticleInterface
      */
 	public function getTitle()
 	{
-		$this->title;
+		return $this->title;
 	}
 	
 	/**
@@ -61,7 +61,7 @@ abstract class BaseArticle implements ArticleInterface
      */
 	public function getShortDesc()
 	{
-		$this->shortDesc;
+		return $this->shortDesc;
 	}
 	
 	/**
@@ -79,7 +79,7 @@ abstract class BaseArticle implements ArticleInterface
      */
 	public function getArticleContent()
 	{
-		$this->articleContent;
+		return $this->articleContent;
 	}
 	
 	/**
