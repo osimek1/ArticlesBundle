@@ -53,16 +53,4 @@ class ArticleCase extends \PHPUnit_Framework_TestCase
             $this->assertEquals($childrens[$i]->getParent(), $parent);
         }
     }
-
-    public function testArticlesSettersAndGettersWithDatabase()
-    {
-    }
-
-    public function testSlugArticle()
-    {
-    }
-
-    public function testNestedSet()
-    {
-    }
 }

@@ -14,6 +14,16 @@ class ArticleManagerTest extends WebTestCase
      */
     private $em;
 	
+    /**
+     * @var Osimek1\ArticlesBundle\Model\ArticleManager
+     */
+    private $manager;
+    
+    /**
+     * @var array
+     */
+    private $languages;
+    
     public function setUp()
     {
 		static::$kernel = static::createKernel();
@@ -22,46 +32,154 @@ class ArticleManagerTest extends WebTestCase
             ->get('doctrine')
             ->getManager()
         ;
+        $this->languages = array('en'=>'English', 'pl'=>'Polski');   
+        $this->manager = new ArticleManager($this->em, $this->languages);
         parent::setUp();
     }
     
     public function testCreateArticle()
     {
-        /** @var Osimek1\ArticlesBundle\Model\ArticleManager **/
-        $entityManager = $this->getMockBuilder('\Doctrine\Common\Persistence\ObjectManager')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $languages = array('en'=>'English');   
-        $manager = new ArticleManager($this->em, $languages);
-        
-		$content = '';		
+        $article = $this->createArticle();
 		
-        $article = $manager->createArticle();		
-        $this->assertTrue(is_object($article));
+        $this->manager->save($article);
 		
-		$translation = $article->getTranslation('en');
-		$translation->setTitle("English article");
-		
-        $translation = $article->getTranslation('pl');
-        $translation->setTitle("Artykuł");
-		$text = $this->generateRandomPolishText(255);
-		$translation->setShortDesc($text);
-		
-        $manager->save($article);
-		
-		$articleFromDB = $manager->getArticleByTranslationSlug('artykul');
+		$articleFromDB = $this->manager->getArticleByTranslationSlug($article->getTranslation('pl')->getSlug());
 		$this->assertTrue(is_object($articleFromDB));
+        
+        foreach ($this->languages as $key => $value) {
+            $translation = $articleFromDB->getTranslation($key);
+            $this->assertTrue(is_object($translation));
+            $this->assertTrue($translation->getTitle() === $value);
+        }
+
+        $translation = $articleFromDB->getTranslation('unknown');
+        $this->assertTrue(is_object($translation));
+        
     }
 	
 	protected function generateRandomPolishText($textLength)
 	{
-		//$alphabet = 'aąbcćdeęfg hijklłmnńoóp qrsśtuvwxyźAĄB CĆDEĘFGHIJKLŁ MNŃOÓPQR SŚTUVWXYŹ12345678';
-		$alphabet = 'qwertyuiopasdfghjklzxcvbnm QWERTYUIOPASDFGHJKLMNBVCXZ';
+		$alphabet = 'aąbcćde ęfghijkl łmnoóprs śtuvwxyźż AĄBCĆDE ĘFGHIJKL ŁMNOÓPRS ŚTUVWXYŹ 1234567890';
+		//$alphabet = 'qwertyuiopasdfghjklzxcvbnm QWERTYUIOPASDFGHJKLMNBVCXZ';
 		$maxRand = strlen($alphabet) - 1;
 		$text = '';
 		for ($i=0; $i<$textLength; $i++){
-			$text = $text . substr($alphabet, rand(0,$maxRand), 1);
+			$text = $text . mb_substr($alphabet, rand(0,$maxRand), 1, 'UTF-8');
 		}
-		return $text;
+		return $alphabet;
 	}
+    
+    protected function createArticle($shortDescLength = 255, $contentLength = 500)
+    {
+        $article = $this->manager->createArticle();
+        
+        foreach ($this->languages as $key => $value) {
+            $translation = $article->getTranslation($key);
+            $translation->setTitle($value);
+            $translation->setShortDesc($this->generateRandomPolishText($shortDescLength));
+            $translation->setArticleContent($this->generateRandomPolishText($contentLength));
+        }
+        return $article; 
+    }
+    
+    public function testDelete()
+    {
+        $article = $this->createArticle();
+        $this->manager->save($article);
+        $this->manager->removeArticleById($article->getId());
+        
+        $parent = $this->createArticle();
+        $root = $parent;
+        $this->manager->save($parent);
+        $childrens = array();
+        $childCount = 10;
+        $child = null;
+        for ($i=0; $i<$childCount; $i++) {
+            $child = $this->createArticle();
+            $child->setParent($parent);
+            if ($i%2 === 0 && $i !== 0) {
+                $parent = $child;
+            }
+        }
+        
+        foreach ($childrens as $value) {
+            $this->manager->save($value);       
+        }
+        $this->manager->removeArticle($parent);
+        for ($i=0; $i<$childCount; $i++) {
+            if ($i%2 === 0) {
+                $this->manager->removeArticle($childrensp[$i]);
+            }
+        }
+    }
+    
+    public function testNestedSetOfArticles()
+    {
+        $parent = $this->createArticle();
+        $root = $parent;
+        $this->manager->save($parent);
+        $childrens = array();
+        $childCount = 10;
+        $child = null;
+        for ($i=0; $i<$childCount; $i++) {
+            $child = $this->createArticle();
+            $child->setParent($parent);
+            if ($i%2 === 0 && $i !== 0) {
+                $parent = $child;
+            }
+            $childrens[] = $child;
+        }
+        
+        foreach ($childrens as $value) {
+            $this->manager->save($value);
+        }
+        
+        $rootId = $root->getId();
+        $root = $this->manager->getArticleById($rootId);
+        
+        $rootChildrens = $this->manager->getAllChildrens($root);
+        $this->assertTrue(count($rootChildrens) === $childCount);
+        
+        $parent = $root;
+        for ($i=0; $i<$childCount; $i++) {
+            $this->assertTrue($rootChildrens[$i]->getRoot() === $rootId);
+            $this->assertTrue($rootChildrens[$i]->getParent()->getId() === $parent->getId());
+            if ($i%2 === 0 && $i !== 0) {
+                $parent = $rootChildrens[$i];
+            }
+        }        
+    }
+
+    public function testNestedSetLefts()
+    {
+        $qb = $this->em->getRepository('Osimek1ArticlesBundle:Article')->createQueryBuilder('a');
+        $qb->select('a.left, a.right, a.root, a.id')->orderBy('a.left, a.root', 'ASC');
+        $results = $qb->getQuery()->getResult();
+        $resultsCount = count($results);
+        
+        $roots = array();
+        $rootId = null;
+        for ($i=0; $i<$resultsCount; $i = $i+1) {
+            $rootId = $results[$i]['root'];
+            if (!isset($roots[$rootId])) {
+                $roots[$rootId] = array('left'=>array(),'right'=>array(), 'allNumbers'=>array());
+            }
+            $this->assertTrue(!isset($roots[$rootId]['left'][$results[$i]['left']]));
+            $roots[$rootId]['left'][$results[$i]['left']] = 1;
+            $this->assertTrue(!isset($roots[$rootId]['right'][$results[$i]['right']]));
+            $roots[$rootId]['right'][$results[$i]['right']] = 1;
+            $roots[$rootId]['allNumbers'][$results[$i]['left']] = 1;
+            $roots[$rootId]['allNumbers'][$results[$i]['right']] = 1;
+        }
+        
+        foreach ($roots as $key => $value) {
+            ksort($roots[$key]['allNumbers']);    
+            $i = 1;
+            foreach ($roots[$key]['allNumbers'] as $key => $value){
+                $this->assertTrue($i == $key);
+                $i = $i + 1;
+            }
+        }
+        
+    }
 }

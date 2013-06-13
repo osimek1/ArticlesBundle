@@ -15,6 +15,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  
  * @author Grzegorz Osimowicz <osimek1@gmail.com>
  * @ORM\Entity()
+ * @ORM\HasLifecycleCallbacks()
  * @ORM\Table()
  * @Gedmo\Tree(type="nested")
  */
@@ -117,6 +118,11 @@ class Article extends TimestampableArticle implements TranslatedArticleInterface
 		if (isset($this->translations[$locale])) {
 			return $this->translations[$locale];
 		} else {
+		    foreach ($this->translations as $key => $value) {
+				if ($value->getLocale() === $locale) {
+				    return $value;
+				}
+			}
 			$artTranslation = new ArticleTranslation();
 			$artTranslation->setArticle($this);
 			$artTranslation->setLocale($locale);
@@ -205,5 +211,26 @@ class Article extends TimestampableArticle implements TranslatedArticleInterface
     public function getId()
     {
         return $this->id;
-    }   
+    }
+    
+    /**
+     * @return integer
+     */
+    public function getLeft()
+    {
+        return $this->left;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getRight()
+    {
+        return $this->right;
+    }
+    
+    public function getRoot()
+    {
+        return $this->root;
+    }
 }
