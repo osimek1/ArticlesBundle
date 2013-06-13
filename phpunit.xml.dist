@@ -11,7 +11,9 @@
          syntaxCheck="false"
          bootstrap="Tests/bootstrap.php"
 >
-
+    <php>
+        <server name="KERNEL_DIR" value="/home/osimek1/www/ArticleBundle/app/" />
+    </php>
     <testsuites>
         <testsuite name="TestBundle Test Suite">
             <directory>./Tests</directory>

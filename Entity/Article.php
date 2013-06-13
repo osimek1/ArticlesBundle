@@ -2,11 +2,13 @@
 
 namespace Osimek1\ArticlesBundle\Entity;
 
-use Osimek1\ArticlesBundle\Model\BaseArticle;
+//use Osimek1\ArticlesBundle\Model\ArticleInterface;
 use Osimek1\ArticlesBundle\Model\ArticleTranslationInterface;
 use Osimek1\ArticlesBundle\Model\TranslatedArticleInterface;
+use Osimek1\ArticlesBundle\Model\TimestampableArticle;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Translatet article class
@@ -15,7 +17,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity()
  * @ORM\Table()
  */
-class Article extends BaseArticle implements TranslatedArticleInterface
+class Article extends TimestampableArticle implements TranslatedArticleInterface 
 {
     /**
      * @var integer
@@ -64,9 +66,24 @@ class Article extends BaseArticle implements TranslatedArticleInterface
 
     /**
      * @var ArrayCollection
-     * @ORM\ManyToOne(targetEntity="ArticleTranslation")
+     * @ORM\OneToMany(targetEntity="ArticleTranslation", mappedBy="article")
      */
     protected $translations;
+
+    /**
+     * @var string
+     */
+    protected $title;
+
+    /**
+     * @var string
+     */
+    protected $shortDesc;
+
+    /**
+     * @var string
+     */
+    protected $articleContent;
 
     /**
      * Returns id of article
@@ -102,7 +119,7 @@ class Article extends BaseArticle implements TranslatedArticleInterface
     /**
      * {@inheritDoc}
      */
-    public function addTranslation(ArticleTranslationInterface $tanslation)
+    public function addTranslation(ArticleTranslationInterface $translation)
     {
         $this->translations[$translation->getLocale()] = $translation;
 
@@ -115,5 +132,62 @@ class Article extends BaseArticle implements TranslatedArticleInterface
     public function getTranslation($locale)
     {
         return $this->translations[$locale];
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public function getShortDesc()
+    {
+        return $this->shortDesc;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getArticleContent()
+    {
+        return $this->articleContent;
+    }
+    
+    /**
+     * @param string $title
+     *
+     * @return ArticleInterface
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+        return $this;
+    }
+
+    /**
+     * @param string $shortDesc
+     *
+     * @return ArticleInterface
+     */
+    public function setShortDesc($shortDesc)
+    {
+        $this->shortDesc = $shortDesc;
+        return $this;
+    }
+
+    /**
+     * @param string $articleContent
+     *
+     * @return ArticleInterface
+     */
+    public function setArticleContent($articleContent)
+    {
+        $this->articleContent = $articleContent;
+        return $this;
     }
 }

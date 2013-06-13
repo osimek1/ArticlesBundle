@@ -9,9 +9,9 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @author Grzegorz Osimowicz <osimek1@gmail.com>
  */
-class ArticleTranslationInterface extends TranslatedArticleInterface
+interface ArticleTranslationInterface
 {
-    abstract public function getLocale();
+    public function getLocale();
 
-    abstract public function setLocale($locale);
+    public function setLocale($locale);
 }

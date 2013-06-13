@@ -4,6 +4,7 @@ namespace Osimek1\ArticlesBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Osimek1\ArticlesBundle\Model\BaseArticle;
+use Osimek1\ArticlesBundle\Model\ArticleTranslationInterface;
 
 /**
  * Article translation class
@@ -12,7 +13,7 @@ use Osimek1\ArticlesBundle\Model\BaseArticle;
  * @ORM\Entity()
  * @ORM\Table()
  */
-class ArticleTranslation extends BaseArticle
+class ArticleTranslation extends BaseArticle implements ArticleTranslationInterface
 {
     /**
      * @var integer
@@ -28,13 +29,59 @@ class ArticleTranslation extends BaseArticle
      */
     protected $locale;
 
+    /**
+     * @var string
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    protected $slug;
+
+    /**
+     * @var Article
+     * @ORM\ManyToOne(targetEntity="Article")
+     * @ORM\JoinColumn(referencedColumnName="id", onDelete="CASCADE")
+     */
+    protected $article;
+
+    public function getId()
+    {
+        return $this->id;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
+    /**
+     * @return string
+     */
     public function getLocale()
     {
         return $this->locale;
     }
     
+    /**
+     * @param $string
+     * 
+     * @return ArticleTranslation
+     */
     public function setLocale($locale)
     {
         $this->locale = $locale;
+        return $this;
+    }
+    
+    public function setArticle(Article $article)
+    {
+        $this->article = $article;
+        return $this;
+    }
+    
+    public function getArticle()
+    {
+        return $this->article;
     }
 }

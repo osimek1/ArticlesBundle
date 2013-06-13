@@ -39,9 +39,6 @@ interface ArticleInterface
      * @return ArticleInterface
      */
     public function setArticleContent($articleContent);
-
-    /**
-     * @return string	 
-     */
-    public function getSlug();
+    
+    
 }

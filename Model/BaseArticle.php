@@ -16,27 +16,24 @@ abstract class BaseArticle implements ArticleInterface
 {
     /**
      * @var string
+     * @ORM\Column(type="string", length=255)
+     * @Assert\Length(max=255)
+     * @Assert\NotNull()
      */
     protected $title;
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=255)
-     * @Assert\MaxLength(255)
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Length(max=255)
      */
     protected $shortDesc;
 
     /**
      * @var string
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     protected $articleContent;
-
-    /**
-     * @var string
-     * @ORM\Column(type="string", length=255)
-     */
-    protected $slug;
 
     /**
      * {@inheritDoc}
@@ -89,10 +86,5 @@ abstract class BaseArticle implements ArticleInterface
     {
         $this->articleContent = $articleContent;
         return $this;
-    }
-
-    public function getSlug()
-    {
-        return $this->slug;
     }
 }

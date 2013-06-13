@@ -21,4 +21,14 @@ interface TranslatedArticleInterface extends ArticleInterface
      * @return Doctrine\Common\Collections\ArrayCollection
      */
     public function getTranslation($locale);
+    
+     /**
+     * {@inheritDoc}
+     */
+    public function getCreatedAt();
+    
+    /**
+     * {@inheritDoc}
+     */
+    public function getUpdatedAt();
 }
