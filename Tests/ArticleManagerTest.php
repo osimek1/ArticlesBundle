@@ -1,18 +1,27 @@
 <?php
-
 namespace Osimek1\ArticlesBundle\Tests;
-
-require_once dirname(__DIR__).'/../../../../../app/AppKernel.php';
 
 use Osimek1\ArticlesBundle\Entity\Article;
 use Osimek1\ArticlesBundle\Entity\ArticleTranslation;
 use Osimek1\ArticlesBundle\Model\ArticleManager;
 
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class ArticleManagerTest extends \PHPUnit_Framework_TestCase
+class ArticleManagerTest extends WebTestCase
 {
+	/**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    private $em;
+	
     public function setUp()
     {
+		static::$kernel = static::createKernel();
+        static::$kernel->boot();
+        $this->em = static::$kernel->getContainer()
+            ->get('doctrine')
+            ->getManager()
+        ;
         parent::setUp();
     }
     
@@ -23,14 +32,36 @@ class ArticleManagerTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $languages = array('en'=>'English');   
-        $manager = new ArticleManager($entityManager, $languages);
+        $manager = new ArticleManager($this->em, $languages);
         
-        $article = $manager->createArticle();
+		$content = '';		
+		
+        $article = $manager->createArticle();		
         $this->assertTrue(is_object($article));
-        foreach ($languages as $key=>$value) {            
-            $this->assertTrue(is_object($article->getTranslation($key)));
-        }
-        
+		
+		$translation = $article->getTranslation('en');
+		$translation->setTitle("English article");
+		
+        $translation = $article->getTranslation('pl');
+        $translation->setTitle("Artykuł");
+		$text = $this->generateRandomPolishText(255);
+		$translation->setShortDesc($text);
+		
         $manager->save($article);
+		
+		$articleFromDB = $manager->getArticleByTranslationSlug('artykul');
+		$this->assertTrue(is_object($articleFromDB));
     }
+	
+	protected function generateRandomPolishText($textLength)
+	{
+		//$alphabet = 'aąbcćdeęfg hijklłmnńoóp qrsśtuvwxyźAĄB CĆDEĘFGHIJKLŁ MNŃOÓPQR SŚTUVWXYŹ12345678';
+		$alphabet = 'qwertyuiopasdfghjklzxcvbnm QWERTYUIOPASDFGHJKLMNBVCXZ';
+		$maxRand = strlen($alphabet) - 1;
+		$text = '';
+		for ($i=0; $i<$textLength; $i++){
+			$text = $text . substr($alphabet, rand(0,$maxRand), 1);
+		}
+		return $text;
+	}
 }

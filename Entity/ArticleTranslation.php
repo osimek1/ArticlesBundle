@@ -1,10 +1,10 @@
 <?php
-
 namespace Osimek1\ArticlesBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Osimek1\ArticlesBundle\Model\BaseArticle;
 use Osimek1\ArticlesBundle\Model\ArticleTranslationInterface;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Article translation class
@@ -32,16 +32,17 @@ class ArticleTranslation extends BaseArticle implements ArticleTranslationInterf
     /**
      * @var string
      * @ORM\Column(type="string", length=255, nullable=true)
+	 * @Gedmo\Slug(fields={"title"})
      */
     protected $slug;
 
     /**
      * @var Article
-     * @ORM\ManyToOne(targetEntity="Article")
+     * @ORM\ManyToOne(targetEntity="Article", cascade={"all"})
      * @ORM\JoinColumn(referencedColumnName="id", onDelete="CASCADE")
      */
     protected $article;
-
+	
     public function getId()
     {
         return $this->id;

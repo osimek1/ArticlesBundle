@@ -1,25 +1,25 @@
 <?php
-
 namespace Osimek1\ArticlesBundle\Entity;
 
 //use Osimek1\ArticlesBundle\Model\ArticleInterface;
 use Osimek1\ArticlesBundle\Model\ArticleTranslationInterface;
 use Osimek1\ArticlesBundle\Model\TranslatedArticleInterface;
 use Osimek1\ArticlesBundle\Model\TimestampableArticle;
+use Osimek1\ArticlesBundle\Model\NestedObjectInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Translatet article class
- *
+ 
  * @author Grzegorz Osimowicz <osimek1@gmail.com>
  * @ORM\Entity()
  * @ORM\Table()
+ * @Gedmo\Tree(type="nested")
  */
-class Article extends TimestampableArticle implements TranslatedArticleInterface 
-{
-    /**
+class Article extends TimestampableArticle implements TranslatedArticleInterface {
+	/**
      * @var integer
      * @var id integer
      * @ORM\Column(type="integer")
@@ -27,46 +27,52 @@ class Article extends TimestampableArticle implements TranslatedArticleInterface
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     protected $id;
-
-    /**
+	
+	/**
      * @var integer
+	 * @Gedmo\TreeLeft
      * @ORM\Column(type="integer", name="lft")
      */
     protected $left;
 
     /**
      * @var integer
+	 * @Gedmo\TreeRight
      * @ORM\Column(type="integer", name="rgt")
      */
     protected $right;
 
     /**
      * @var integer
+	 * @Gedmo\TreeLevel
      * @ORM\Column(type="integer", name="lvl")
      */
     protected $level;
 
     /**
      * @var integer
+	 * @Gedmo\TreeRoot
      * @ORM\Column(type="integer")
      */
     protected $root;
-
-    /**
+	
+	/**
      * @var Article
+	 * @Gedmo\TreeParent
      * @ORM\ManyToOne(targetEntity="Article")
      */
     protected $parent;
-
+	
     /**
      * @var array[Article]
-     * @ORM\OneToMany(targetEntity="Article", mappedBy="parent")
+     * @ORM\OneToMany(targetEntity="Article", mappedBy="parent", cascade={"persist"})
+	 * @ORM\OrderBy({"lft" = "ASC"})
      */
     protected $children;
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="ArticleTranslation", mappedBy="article")
+     * @ORM\OneToMany(targetEntity="ArticleTranslation", mappedBy="article", cascade={"all"})
      */
     protected $translations;
 
@@ -83,30 +89,7 @@ class Article extends TimestampableArticle implements TranslatedArticleInterface
     /**
      * @var string
      */
-    protected $articleContent;
-
-    /**
-     * Returns id of article
-     * @return integer
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * Returns parent of article
-     * @return Article
-     */
-    public function getParent()
-    {
-        return $this->parent;
-    }
-
-    public function setParent(Article $parent)
-    {
-        $this->parent = $parent;
-    }
+    protected $articleContent;   
 
     /**
      * @return 
@@ -131,7 +114,17 @@ class Article extends TimestampableArticle implements TranslatedArticleInterface
      */
     public function getTranslation($locale)
     {
-        return $this->translations[$locale];
+		if (isset($this->translations[$locale])) {
+			return $this->translations[$locale];
+		} else {
+			$artTranslation = new ArticleTranslation();
+			$artTranslation->setArticle($this);
+			$artTranslation->setLocale($locale);
+			$this->addTranslation($artTranslation);
+			
+			return $artTranslation;
+		}
+        return  null;
     }
     
     /**
@@ -190,4 +183,27 @@ class Article extends TimestampableArticle implements TranslatedArticleInterface
         $this->articleContent = $articleContent;
         return $this;
     }
+	
+	/**
+     * Returns parent of article
+     * @return Article
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    public function setParent(Article $parent)
+    {
+        $this->parent = $parent;
+    }
+	
+	/**
+     * Returns id of article
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }   
 }

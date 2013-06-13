@@ -1,5 +1,4 @@
 <?php
-
 namespace Osimek1\ArticlesBundle\Model;
 
 use Osimek1\ArticlesBundle\Entity\Article;
@@ -33,4 +32,14 @@ class ArticleManager
         $this->em->persist($article);
         $this->em->flush();
     }
+	
+	public function getArticleByTranslationSlug($slug)
+	{
+		$qb = $this->em->getRepository('Osimek1ArticlesBundle:Article')->createQueryBuilder('a');
+		$qb->innerJoin('a.translations', 't')
+			->where('t.slug = :slug')
+			->setParameter('slug', $slug);
+			
+		return $qb->getQuery()->getResult();
+	}
 }
