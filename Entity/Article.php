@@ -13,11 +13,11 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * Translatet article class
  
- * @author Grzegorz Osimowicz <osimek1@gmail.com>
- * @ORM\Entity()
+ * @author Grzegorz Osimowicz <osimek1@gmail.com> 
  * @ORM\HasLifecycleCallbacks()
  * @ORM\Table()
  * @Gedmo\Tree(type="nested")
+ * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
  */
 class Article extends TimestampableArticle implements TranslatedArticleInterface {
 	/**
@@ -60,13 +60,14 @@ class Article extends TimestampableArticle implements TranslatedArticleInterface
 	/**
      * @var Article
 	 * @Gedmo\TreeParent
-     * @ORM\ManyToOne(targetEntity="Article")
+     * @ORM\ManyToOne(targetEntity="Article",  inversedBy="children")
+     * @ORM\JoinColumn(referencedColumnName="id")
      */
     protected $parent;
 	
     /**
      * @var array[Article]
-     * @ORM\OneToMany(targetEntity="Article", mappedBy="parent", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="Article", mappedBy="parent")
 	 * @ORM\OrderBy({"lft" = "ASC"})
      */
     protected $children;
@@ -91,6 +92,11 @@ class Article extends TimestampableArticle implements TranslatedArticleInterface
      * @var string
      */
     protected $articleContent;   
+
+    /**
+     * @var string
+     */
+    protected $slug;   
 
     /**
      * @return 
@@ -131,6 +137,15 @@ class Article extends TimestampableArticle implements TranslatedArticleInterface
 			return $artTranslation;
 		}
         return  null;
+    }
+    
+    public function translate($locale)
+    {
+        $translation = $this->getTranslation($locale);
+        $this->title = $translation->getTitle();
+        $this->shortDesc = $translation->getShortDesc();
+        $this->slug = $translation->getSlug();
+        $this->articleContent = $translation->getArticleContent();
     }
     
     /**
@@ -232,5 +247,13 @@ class Article extends TimestampableArticle implements TranslatedArticleInterface
     public function getRoot()
     {
         return $this->root;
+    }
+    
+    /**
+     * @return string
+     */
+    public function getSlug()
+    {
+        
     }
 }

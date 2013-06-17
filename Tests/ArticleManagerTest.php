@@ -33,7 +33,8 @@ class ArticleManagerTest extends WebTestCase
             ->getManager()
         ;
         $this->languages = array('en'=>'English', 'pl'=>'Polski');   
-        $this->manager = new ArticleManager($this->em, $this->languages);
+        $this->manager = new ArticleManager($this->em, $this->languages, static::$kernel->getContainer());
+        //$this->manager = static::$kernel->getContainer()->get('osimek1.articles.manager');
         parent::setUp();
     }
     
@@ -82,6 +83,30 @@ class ArticleManagerTest extends WebTestCase
         return $article; 
     }
     
+    public function testSimpleDelete()
+    {
+        $article = $this->createArticle();
+        $this->manager->save($article);
+        $this->manager->removeArticleById($article->getId());
+
+        $article = $this->createArticle();
+        $this->manager->save($article);
+        $this->manager->removeArticle($article);
+    }
+    
+    public function testLanguages()
+    {
+        $client = static::createClient();
+
+        $article = $this->createArticle();
+        $this->manager->save($article);
+        $article = $this->manager->getArticleById($article->getId());
+        
+        $this->assertTrue($article->getTranslation('en')->getTitle()==="English");
+        $this->assertTrue($article->getTranslation('en')->getTitle()===$article->getTitle());
+    }
+    
+    /*
     public function testDelete()
     {
         $article = $this->createArticle();
@@ -100,6 +125,7 @@ class ArticleManagerTest extends WebTestCase
             if ($i%2 === 0 && $i !== 0) {
                 $parent = $child;
             }
+            $childrens[] = $child;
         }
         
         foreach ($childrens as $value) {
@@ -108,13 +134,13 @@ class ArticleManagerTest extends WebTestCase
         $this->manager->removeArticle($parent);
         for ($i=0; $i<$childCount; $i++) {
             if ($i%2 === 0) {
-                $this->manager->removeArticle($childrensp[$i]);
+                $this->manager->removeArticle($childrens[$i]);
             }
         }
     }
     
     public function testNestedSetOfArticles()
-    {
+    {        
         $parent = $this->createArticle();
         $root = $parent;
         $this->manager->save($parent);
@@ -147,13 +173,16 @@ class ArticleManagerTest extends WebTestCase
             if ($i%2 === 0 && $i !== 0) {
                 $parent = $rootChildrens[$i];
             }
-        }        
+        } 
+          
+                
     }
 
     public function testNestedSetLefts()
     {
+        
         $qb = $this->em->getRepository('Osimek1ArticlesBundle:Article')->createQueryBuilder('a');
-        $qb->select('a.left, a.right, a.root, a.id')->orderBy('a.left, a.root', 'ASC');
+        $qb->select('a.left, a.right, a.root, a.id')->orderBy('a.root, a.left', 'ASC');
         $results = $qb->getQuery()->getResult();
         $resultsCount = count($results);
         
@@ -182,4 +211,6 @@ class ArticleManagerTest extends WebTestCase
         }
         
     }
+     * 
+     */
 }
