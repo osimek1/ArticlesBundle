@@ -106,7 +106,7 @@ class ArticleManagerTest extends WebTestCase
         $this->assertTrue($article->getTranslation('en')->getTitle()===$article->getTitle());
     }
     
-    /*
+    
     public function testDelete()
     {
         $article = $this->createArticle();
@@ -211,6 +211,4 @@ class ArticleManagerTest extends WebTestCase
         }
         
     }
-     * 
-     */
 }
