@@ -34,13 +34,14 @@ class ArticleManager
     }
     
     
-    public function getOneArticleBy(array $criteria, array $orderBy = null, $locale = null)
+    public function getOneArticleBy(array $criteria, array $orderBy = null, $locale = null, $repository='Osimek1ArticlesBundle:Article')
     {
         if(!isset($locale)){
             $locale = $this->getCurrentLocale();
         }
-        $qb = $this->em->getRepository('Osimek1ArticlesBundle:Article')->createQueryBuilder('a');
-        $qb->innerJoin('a.translations', 't')
+        $qb = $this->em->getRepository($repository)->createQueryBuilder('a');
+        $qb->select('a,t')
+            ->innerJoin('a.translations', 't')
             ->where('t.locale = :locale')
             ->setParameter('locale', $locale);
             
@@ -76,17 +77,23 @@ class ArticleManager
         return $locale;
     }
     
-    public function getArticlesBy(array $criteria, array $orderBy = null, $limit = null, $offset = null, $locale=null)
+    public function getArticlesBy(array $criteria, array $orderBy = null, $limit = null, $offset = null, $locale=null, $repository='Osimek1ArticlesBundle:Article')
     {
         if(!isset($locale)){
             $locale = $this->getCurrentLocale();            
         }
-        $qb = $this->em->getRepository('Osimek1ArticlesBundle:Article')->createQueryBuilder('a');
-        $qb->innerJoin('a.translations', 't')
+        $qb = $this->em->getRepository($repository)->createQueryBuilder('a');
+        $qb->select('a,t')
+            ->innerJoin('a.translations', 't')
             ->where('t.locale = :locale')
             ->setParameter('locale', $locale);
-
-        $articles = $qb->getQuery()->getResults();
+        $i = 0;
+        foreach ($criteria as $key => $value) {
+            $qb->andWhere("a.$key = :$key");
+            $qb->setParameter("$key", $value);
+        }
+        
+        $articles = $qb->getQuery()->getResult();
         foreach ($articles as $key => $article) {
             $articles[$key] = $this->translateArticle($article);
         }
@@ -100,27 +107,34 @@ class ArticleManager
         $this->em->flush();
     }
     
-	public function getArticleByTranslationSlug($slug, $createNewIfNotFound = false)
+	public function getArticleByTranslationSlug($slug, $createNewIfNotFound = false, $repository='Osimek1ArticlesBundle:Article')
 	{
-		$qb = $this->em->getRepository('Osimek1ArticlesBundle:Article')->createQueryBuilder('a');
-		$qb->innerJoin('a.translations', 't')
+		$qb = $this->em->getRepository($repository)->createQueryBuilder('a');
+		$qb->select('a,t')
+	        ->innerJoin('a.translations', 't')
 			->where('t.slug = :slug')
 			->setParameter('slug', $slug);
         $article = $qb->getQuery()->getSingleResult();
-        if ($createNewIfNotFound && ! $article instanceof Osimek1\ArticlesBundle\Entity\Article) {
+        $locale = null;
+        if($article instanceof \Osimek1\ArticlesBundle\Entity\Article){
+            $locale = $article->getTranslations()->first()->getLocale();
+        }
+        
+        if ($createNewIfNotFound && ! $article instanceof \Osimek1\ArticlesBundle\Entity\Article) {
             $article = $this->createArticle();
         }
         
-        $article = $this->translateArticle($article);
+        $article = $this->translateArticle($article, $locale);
         
 		return $article;
 	}
     
-    public function getArticleById($id, $createNewIfNotFound = false)
+    public function getArticleById($id, $createNewIfNotFound = false, $repository='Osimek1ArticlesBundle:Article')
     {
         $article = $this->em
-                ->getRepository('Osimek1ArticlesBundle:Article')
+                ->getRepository($repository)
                 ->createQueryBuilder('a')
+                ->select('a,t')
                 ->innerJoin('a.translations', 't')
                 ->where('t.locale = :locale')
                 ->andWhere('a.id = :id')
@@ -153,9 +167,9 @@ class ArticleManager
         
     }
     
-    public function getAllChildrens($article)
+    public function getAllChildrens($article, $repository='Osimek1ArticlesBundle:Article')
     {
-        $qb = $this->em->getRepository('Osimek1ArticlesBundle:Article')->createQueryBuilder('a');
+        $qb = $this->em->getRepository($repository)->createQueryBuilder('a')->select('a,t');
         $qb->where('a.left > :left')
             ->andWhere('a.right < :right')
             ->andWhere('a.root = :root')

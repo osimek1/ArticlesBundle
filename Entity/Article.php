@@ -18,6 +18,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Table()
  * @Gedmo\Tree(type="nested")
  * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
+ * @ORM\InheritanceType("SINGLE_TABLE")
  */
 class Article extends TimestampableArticle implements TranslatedArticleInterface {
 	/**
@@ -144,7 +145,7 @@ class Article extends TimestampableArticle implements TranslatedArticleInterface
         $translation = $this->getTranslation($locale);
         $this->title = $translation->getTitle();
         $this->shortDesc = $translation->getShortDesc();
-        $this->slug = $translation->getSlug();
+        $this->slug = $translation->getSlug();        
         $this->articleContent = $translation->getArticleContent();
     }
     
@@ -254,6 +255,6 @@ class Article extends TimestampableArticle implements TranslatedArticleInterface
      */
     public function getSlug()
     {
-        
+        return $this->slug;
     }
 }

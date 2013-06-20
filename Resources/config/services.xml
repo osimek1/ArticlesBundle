@@ -22,7 +22,7 @@
         <service id="osimek1.articles.manager" class="%osimek1.articles.manager.class%">
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument>%osimek1.articles.languages%</argument>
-            <property name="container" type="service" id="service_container" />
+            <argument type="service" id="service_container" />
         </service>
 		<service id="gedmo.listener.tree" class="Gedmo\Tree\TreeListener">
 			<tag name="doctrine.event_subscriber" connection="default"/>
