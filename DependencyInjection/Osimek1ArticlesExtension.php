@@ -21,7 +21,8 @@ class Osimek1ArticlesExtension extends Extension
     {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
-
+        $languages = $config['languages'];
+        $container->setParameter("osimek1.articles.languages", $languages);
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
     }

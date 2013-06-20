@@ -11,11 +11,11 @@ class ArticleManager
     protected $container;
     protected $repo;
     protected $defaultLocale;
-    public function __construct($em, $languages, $container, $defaultLocale)
+    public function __construct($em, $container, $defaultLocale)
     {
         $this->em = $em;
-        $this->languages = $languages;
         $this->container = $container;
+        $this->languages = $container->getParameter('osimek1.articles.languages');
         $this->repo = $this->em->getRepository('Osimek1ArticlesBundle:Article');
         $this->defaultLocale = $defaultLocale;
     }  
@@ -61,7 +61,7 @@ class ArticleManager
     protected function translateArticle($article, $locale=null)
     {
         if(!isset($locale)){
-            $locale = $this->getCurrentLocale();            
+            $locale = $this->getCurrentLocale();
         }
         
         if (isset($article)){
@@ -75,7 +75,6 @@ class ArticleManager
     {
         $locale = $this->container->get('session')->get('_locale');
         $locale = isset($locale) ? $locale : $this->defaultLocale;
-
         if(!array_key_exists($locale, $this->languages)){
             throw new \Exception("No translations found");
         }
@@ -86,7 +85,7 @@ class ArticleManager
     public function getArticlesBy(array $criteria, array $orderBy = null, $limit = null, $offset = null, $locale=null, $repository='Osimek1ArticlesBundle:Article')
     {
         if(!isset($locale)){
-            $locale = $this->getCurrentLocale();            
+            $locale = $this->getCurrentLocale();
         }
         $qb = $this->em->getRepository($repository)->createQueryBuilder('a');
         $qb->select('a,t')

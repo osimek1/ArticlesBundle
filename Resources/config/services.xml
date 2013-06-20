@@ -7,9 +7,6 @@
     
     <parameters>
         <parameter key="osimek1.articles.manager.class">Osimek1\ArticlesBundle\Model\ArticleManager</parameter>
-        <parameter key="osimek1.articles.languages" type="collection">
-            <parameter key="en">English</parameter>            
-        </parameter>
     </parameters>
     
     <services>
@@ -21,7 +18,6 @@
         -->
         <service id="osimek1.articles.manager" class="%osimek1.articles.manager.class%">
             <argument type="service" id="doctrine.orm.entity_manager" />
-            <argument>%osimek1.articles.languages%</argument>
             <argument type="service" id="service_container" />
             <argument>%locale%</argument>
         </service>
@@ -43,6 +39,11 @@
 				<argument type="service" id="annotation_reader" />
 			</call>
 		</service>
+
+        <service id="osimek1.articles.twig.language_extension" class="Osimek1\ArticlesBundle\Twig\Extension\LanguageExtension" >
+            <argument>%osimek1.articles.languages%</argument>
+            <tag name="twig.extension" />
+        </service>
     </services>
     
 </container>
