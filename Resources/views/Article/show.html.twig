@@ -1,0 +1,14 @@
+{% extends 'Osimek1ArticlesBundle::layout.html.twig' %}
+
+{% block osimek1_articles_header %}
+<h1>{{article.getTitle()}}</h1>
+{% endblock osimek1_articles_header %}
+
+{% block osimek1_articles_content %}
+<div>
+    <strong>{{article.shortDesc}}</strong>
+</div>
+<div>
+    {{article.articleContent}}
+</div>
+{% endblock osimek1_articles_content%}
