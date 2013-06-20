@@ -74,15 +74,11 @@ class ArticleManager
     protected function getCurrentLocale()
     {
         $locale = $this->container->get('session')->get('_locale');
-<<<<<<< HEAD
         $locale = isset($locale) ? $locale : $this->defaultLocale;
 
         if(!array_key_exists($locale, $this->languages)){
             throw new \Exception("No translations found");
         }
-=======
-        $locale = isset($locale) ? $locale : "en_EN";
->>>>>>> 7ca7417e928a335f44a7e6208099a7f15f2de86e
         
         return $locale;
     }
