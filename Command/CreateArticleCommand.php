@@ -34,6 +34,7 @@ class CreateArticleCommand extends ContainerAwareCommand
             if (!isset($this->titles[$key])) {
                 throw new \Exception("$value title can not be empty");
             }
+            $output->writeln("<info>Creating translations for: $key</info>");
             $article->getTranslation($key)->setTitle($this->titles[$key]);
         }
         $manager->save($article);
@@ -48,7 +49,7 @@ class CreateArticleCommand extends ContainerAwareCommand
         foreach ($languages as $key => $value) {
             $title = $this->getHelper('dialog')->askAndValidate(
                 $output,
-                "Please enter title for $value language:",
+                "Please enter title for $value language:\t",
                 function($title) {
                     if (empty($title)) {
                         throw new \Exception('Title can not be empty');
