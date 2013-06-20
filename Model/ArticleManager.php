@@ -10,12 +10,14 @@ class ArticleManager
     protected $languages;
     protected $container;
     protected $repo;
-    public function __construct($em, $languages, $container)
+    protected $defaultLocale;
+    public function __construct($em, $languages, $container, $defaultLocale)
     {
         $this->em = $em;
         $this->languages = $languages;
         $this->container = $container;
         $this->repo = $this->em->getRepository('Osimek1ArticlesBundle:Article');
+        $this->defaultLocale = $defaultLocale;
     }  
     
     public function createArticle()
@@ -72,7 +74,11 @@ class ArticleManager
     protected function getCurrentLocale()
     {
         $locale = $this->container->get('session')->get('_locale');
-        $locale = isset($locale) ? $locale : "en";
+        $locale = isset($locale) ? $locale : $this->defaultLocale;
+
+        if(!array_key_exists($locale, $this->languages)){
+            throw new \Exception("No translations found");
+        }
         
         return $locale;
     }
