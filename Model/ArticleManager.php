@@ -98,6 +98,10 @@ class ArticleManager
             $qb->setParameter("$key", $value);
         }
         
+        foreach ($orderBy as $key => $value) {
+            $qb->orderBy("a.$key", $value);
+        }
+        
         $articles = $qb->getQuery()->getResult();
         foreach ($articles as $key => $article) {
             $articles[$key] = $this->translateArticle($article);
