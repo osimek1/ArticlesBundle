@@ -38,7 +38,7 @@ class ArticleTranslation extends BaseArticle implements ArticleTranslationInterf
 
     /**
      * @var Article
-     * @ORM\ManyToOne(targetEntity="Article", cascade={"all"})
+     * @ORM\ManyToOne(targetEntity="Osimek1\ArticlesBundle\Entity\Article", cascade={"all"})
      * @ORM\JoinColumn(referencedColumnName="id", onDelete="CASCADE")
      */
     protected $article;
