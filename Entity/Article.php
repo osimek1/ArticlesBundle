@@ -68,14 +68,14 @@ class Article extends TimestampableArticle implements TranslatedArticleInterface
 	
     /**
      * @var array[Article]
-     * @ORM\OneToMany(targetEntity="Article", mappedBy="parent")
+     * @ORM\OneToMany(targetEntity="Osimek1\ArticlesBundle\Entity\Article", mappedBy="parent")
 	 * @ORM\OrderBy({"lft" = "ASC"})
      */
     protected $children;
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="ArticleTranslation", mappedBy="article", cascade={"all"})
+     * @ORM\OneToMany(targetEntity="Osimek1\ArticlesBundle\Entity\ArticleTranslation", mappedBy="article", cascade={"all"})
      */
     protected $translations;
 
@@ -92,7 +92,7 @@ class Article extends TimestampableArticle implements TranslatedArticleInterface
     /**
      * @var string
      */
-    protected $articleContent;   
+    protected $articleContent;
 
     /**
      * @var string
