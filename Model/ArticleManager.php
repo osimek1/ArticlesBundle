@@ -84,8 +84,8 @@ class ArticleManager
     {
         $locale = $this->container->get('session')->get('_locale');
         $locale = isset($locale) ? $locale : $this->defaultLocale;
-        if (!array_key_exists($locale, $this->languages)) {
-            throw new \Exception("No translations found");
+        if(!array_key_exists($locale, $this->languages)){
+            throw new \Exception("No translations found for locale: $locale");
         }
         
         return $locale;
