@@ -1,7 +1,6 @@
 <?php
 namespace Osimek1\ArticlesBundle\Entity;
 
-//use Osimek1\ArticlesBundle\Model\ArticleInterface;
 use Osimek1\ArticlesBundle\Model\ArticleTranslationInterface;
 use Osimek1\ArticlesBundle\Model\TranslatedArticleInterface;
 use Osimek1\ArticlesBundle\Model\TimestampableArticle;
@@ -20,8 +19,9 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
  * @ORM\InheritanceType("SINGLE_TABLE")
  */
-class Article extends TimestampableArticle implements TranslatedArticleInterface {
-	/**
+class Article extends TimestampableArticle implements TranslatedArticleInterface
+{
+    /**
      * @var integer
      * @var id integer
      * @ORM\Column(type="integer")
@@ -29,53 +29,54 @@ class Article extends TimestampableArticle implements TranslatedArticleInterface
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     protected $id;
-	
-	/**
+    
+    /**
      * @var integer
-	 * @Gedmo\TreeLeft
+     * @Gedmo\TreeLeft
      * @ORM\Column(type="integer", name="lft")
      */
     protected $left;
 
     /**
      * @var integer
-	 * @Gedmo\TreeRight
+     * @Gedmo\TreeRight
      * @ORM\Column(type="integer", name="rgt")
      */
     protected $right;
 
     /**
      * @var integer
-	 * @Gedmo\TreeLevel
+     * @Gedmo\TreeLevel
      * @ORM\Column(type="integer", name="lvl")
      */
     protected $level;
 
     /**
      * @var integer
-	 * @Gedmo\TreeRoot
+     * @Gedmo\TreeRoot
      * @ORM\Column(type="integer")
      */
     protected $root;
-	
-	/**
+
+    /**
      * @var Article
-	 * @Gedmo\TreeParent
+     * @Gedmo\TreeParent
      * @ORM\ManyToOne(targetEntity="Osimek1\ArticlesBundle\Entity\Article",  inversedBy="children")
      * @ORM\JoinColumn(referencedColumnName="id")
      */
     protected $parent;
-	
+
     /**
      * @var array[Article]
      * @ORM\OneToMany(targetEntity="Osimek1\ArticlesBundle\Entity\Article", mappedBy="parent")
-	 * @ORM\OrderBy({"left" = "ASC"})
+     * @ORM\OrderBy({"left" = "ASC"})
      */
     protected $children;
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="Osimek1\ArticlesBundle\Entity\ArticleTranslation", mappedBy="article", cascade={"all"})
+     * @ORM\OneToMany(targetEntity="Osimek1\ArticlesBundle\Entity\ArticleTranslation", 
+                      mappedBy="article", cascade={"all"})
      */
     protected $translations;
 
@@ -97,7 +98,8 @@ class Article extends TimestampableArticle implements TranslatedArticleInterface
     /**
      * @var string
      */
-    protected $slug;   
+    protected $slug;
+
 
     /**
      * @return 
@@ -107,48 +109,51 @@ class Article extends TimestampableArticle implements TranslatedArticleInterface
         return $this->translations;
     }
 
+
     /**
      * {@inheritDoc}
      */
     public function addTranslation(ArticleTranslationInterface $translation)
     {
         $this->translations[$translation->getLocale()] = $translation;
-
         return $this;
     }
+
 
     /**
      * {@inheritDoc}
      */
     public function getTranslation($locale)
     {
-		if (isset($this->translations[$locale])) {
-			return $this->translations[$locale];
-		} else {
-		    foreach ($this->translations as $key => $value) {
-				if ($value->getLocale() === $locale) {
-				    return $value;
-				}
-			}
-			$artTranslation = new ArticleTranslation();
-			$artTranslation->setArticle($this);
-			$artTranslation->setLocale($locale);
-			$this->addTranslation($artTranslation);
-			
-			return $artTranslation;
-		}
+        if (isset($this->translations[$locale])) {
+            return $this->translations[$locale];
+        } else {
+            foreach ($this->translations as $key => $value) {
+                if ($value->getLocale() === $locale) {
+                    return $value;
+                }
+            }
+            $artTranslation = new ArticleTranslation();
+            $artTranslation->setArticle($this);
+            $artTranslation->setLocale($locale);
+            $this->addTranslation($artTranslation);
+            
+            return $artTranslation;
+        }
         return  null;
     }
-    
+
+
     public function translate($locale)
     {
         $translation = $this->getTranslation($locale);
         $this->title = $translation->getTitle();
         $this->shortDesc = $translation->getShortDesc();
-        $this->slug = $translation->getSlug();        
+        $this->slug = $translation->getSlug();
         $this->articleContent = $translation->getArticleContent();
     }
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -156,7 +161,8 @@ class Article extends TimestampableArticle implements TranslatedArticleInterface
     {
         return $this->title;
     }
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -165,6 +171,7 @@ class Article extends TimestampableArticle implements TranslatedArticleInterface
         return $this->shortDesc;
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -172,7 +179,8 @@ class Article extends TimestampableArticle implements TranslatedArticleInterface
     {
         return $this->articleContent;
     }
-    
+
+
     /**
      * @param string $title
      *
@@ -183,6 +191,7 @@ class Article extends TimestampableArticle implements TranslatedArticleInterface
         $this->title = $title;
         return $this;
     }
+
 
     /**
      * @param string $shortDesc
@@ -195,6 +204,7 @@ class Article extends TimestampableArticle implements TranslatedArticleInterface
         return $this;
     }
 
+
     /**
      * @param string $articleContent
      *
@@ -205,8 +215,9 @@ class Article extends TimestampableArticle implements TranslatedArticleInterface
         $this->articleContent = $articleContent;
         return $this;
     }
-	
-	/**
+
+
+    /**
      * Returns parent of article
      * @return Article
      */
@@ -215,12 +226,14 @@ class Article extends TimestampableArticle implements TranslatedArticleInterface
         return $this->parent;
     }
 
+
     public function setParent(Article $parent)
     {
         $this->parent = $parent;
     }
-	
-	/**
+
+
+    /**
      * Returns id of article
      * @return integer
      */
@@ -228,7 +241,8 @@ class Article extends TimestampableArticle implements TranslatedArticleInterface
     {
         return $this->id;
     }
-    
+
+
     /**
      * @return integer
      */
@@ -237,6 +251,7 @@ class Article extends TimestampableArticle implements TranslatedArticleInterface
         return $this->left;
     }
 
+
     /**
      * @return integer
      */
@@ -244,12 +259,14 @@ class Article extends TimestampableArticle implements TranslatedArticleInterface
     {
         return $this->right;
     }
-    
+
+
     public function getRoot()
     {
         return $this->root;
     }
-    
+
+
     /**
      * @return string
      */

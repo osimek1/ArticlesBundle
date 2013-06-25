@@ -11,7 +11,8 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 class CreateArticleCommand extends ContainerAwareCommand
 {
     protected $titles = array();
-    
+
+
     protected function configure()
     {
         $this
@@ -19,15 +20,14 @@ class CreateArticleCommand extends ContainerAwareCommand
             ->setDescription(
                 'Create new article'
             );
-            //->addArgument('titles', InputArgument::IS_ARRAY | InputArgument::OPTIONAL, 'Array of article titles.');
     }
-    
-    
+
+
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $container = $this->getContainer();  
+        $container = $this->getContainer();
         $manager = $container->get('osimek1.articles.manager');
-        
+
         $languages = $container->getParameter('osimek1.articles.languages');
         $article = $manager->createArticle();
         foreach ($languages as $key => $value) {
@@ -39,7 +39,8 @@ class CreateArticleCommand extends ContainerAwareCommand
         }
         $manager->save($article);
     }
-    
+
+
     /**
      * @see Command
      */
@@ -50,11 +51,11 @@ class CreateArticleCommand extends ContainerAwareCommand
             $title = $this->getHelper('dialog')->askAndValidate(
                 $output,
                 "Please enter title for $value language:\t",
-                function($title) {
+                function ($title) {
                     if (empty($title)) {
                         throw new \Exception('Title can not be empty');
                     }
-    
+
                     return $title;
                 }
             );

@@ -15,13 +15,15 @@ EOT
 
 
 
-spl_autoload_register(function($class) {
-    if (0 === strpos($class, 'Osimek1\\ArticlesBundle\\')) {
-        $path = __DIR__.'/../'.implode('/', array_slice(explode('\\', $class), 2)).'.php';
-        if (!stream_resolve_include_path($path)) {
-            return false;
+spl_autoload_register(
+    function ($class) {
+        if (0 === strpos($class, 'Osimek1\\ArticlesBundle\\')) {
+            $path = __DIR__.'/../'.implode('/', array_slice(explode('\\', $class), 2)).'.php';
+            if (!stream_resolve_include_path($path)) {
+                return false;
+            }
+            require_once $path;
+            return true;
         }
-        require_once $path;
-        return true;
     }
-});
+);

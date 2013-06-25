@@ -1,7 +1,8 @@
 <?php
 namespace Osimek1\ArticlesBundle\Model;
 
-interface SluggableArticleInterface {
+interface SluggableArticleInterface
+{
     /**
      * @return string
      */

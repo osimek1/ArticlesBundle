@@ -6,7 +6,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-class TimestampableArticle {
+class TimestampableArticle
+{
     /**
      * @ORM\Column(type="datetime")
      * @Gedmo\Timestampable(on="create")
@@ -18,7 +19,8 @@ class TimestampableArticle {
      * @Gedmo\Timestampable(on="update")
      */
     protected $updatedAt;
-    
+
+
     /**
      * @return datetime
      */
@@ -26,7 +28,8 @@ class TimestampableArticle {
     {
         return $this->createdAt;
     }
-    
+
+
     /**
      * @return datetime
      */
@@ -35,4 +38,3 @@ class TimestampableArticle {
         return $this->updatedAt;
     }
 }
-    

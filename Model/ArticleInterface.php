@@ -38,6 +38,4 @@ interface ArticleInterface
      * @return ArticleInterface
      */
     public function setArticleContent($articleContent);
-    
-    
 }

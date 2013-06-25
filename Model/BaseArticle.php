@@ -33,6 +33,7 @@ abstract class BaseArticle implements ArticleInterface
      */
     protected $articleContent;
 
+
     /**
      * {@inheritDoc}
      */
@@ -40,6 +41,7 @@ abstract class BaseArticle implements ArticleInterface
     {
         return $this->title;
     }
+
 
     /**
      * {@inheritDoc}
@@ -51,6 +53,7 @@ abstract class BaseArticle implements ArticleInterface
         return $this;
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -58,6 +61,7 @@ abstract class BaseArticle implements ArticleInterface
     {
         return $this->shortDesc;
     }
+
 
     /**
      * {@inheritDoc}
@@ -69,6 +73,7 @@ abstract class BaseArticle implements ArticleInterface
         return $this;
     }
     
+
     /**
      * {@inheritDoc}
      */
@@ -77,6 +82,7 @@ abstract class BaseArticle implements ArticleInterface
         return $this->articleContent;
     }
     
+
     /**
      * {@inheritDoc}
      */

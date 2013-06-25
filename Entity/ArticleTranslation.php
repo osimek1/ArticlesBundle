@@ -32,7 +32,7 @@ class ArticleTranslation extends BaseArticle implements ArticleTranslationInterf
     /**
      * @var string
      * @ORM\Column(type="string", length=255, nullable=true)
-	 * @Gedmo\Slug(fields={"title"})
+     * @Gedmo\Slug(fields={"title"})
      */
     protected $slug;
 
@@ -42,12 +42,14 @@ class ArticleTranslation extends BaseArticle implements ArticleTranslationInterf
      * @ORM\JoinColumn(referencedColumnName="id", onDelete="CASCADE")
      */
     protected $article;
-	
+
+
     public function getId()
     {
         return $this->id;
     }
-    
+
+
     /**
      * {@inheritDoc}
      */
@@ -56,6 +58,7 @@ class ArticleTranslation extends BaseArticle implements ArticleTranslationInterf
         return $this->slug;
     }
 
+
     /**
      * @return string
      */
@@ -63,7 +66,8 @@ class ArticleTranslation extends BaseArticle implements ArticleTranslationInterf
     {
         return $this->locale;
     }
-    
+
+
     /**
      * @param $string
      * 
@@ -74,13 +78,15 @@ class ArticleTranslation extends BaseArticle implements ArticleTranslationInterf
         $this->locale = $locale;
         return $this;
     }
+
     
     public function setArticle(Article $article)
     {
         $this->article = $article;
         return $this;
     }
-    
+
+
     public function getArticle()
     {
         return $this->article;
