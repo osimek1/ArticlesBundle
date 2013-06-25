@@ -69,7 +69,7 @@ class Article extends TimestampableArticle implements TranslatedArticleInterface
     /**
      * @var array[Article]
      * @ORM\OneToMany(targetEntity="Osimek1\ArticlesBundle\Entity\Article", mappedBy="parent")
-	 * @ORM\OrderBy({"lft" = "ASC"})
+	 * @ORM\OrderBy({"left" = "ASC"})
      */
     protected $children;
 
