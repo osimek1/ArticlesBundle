@@ -98,17 +98,24 @@ class ArticleManager
         $limit = null,
         $offset = null,
         $locale = null,
-        $repository = 'Osimek1ArticlesBundle:Article'
+        $repository = 'Osimek1ArticlesBundle:Article',
+        $useCurrentLocale = true
     ) {
         if (!isset($locale)) {
             $locale = $this->getCurrentLocale();
         }
 
         $qb = $this->em->getRepository($repository)->createQueryBuilder('a');
-        $qb->select('a,t')
-            ->innerJoin('a.translations', 't')
-            ->where('t.locale = :locale')
-            ->setParameter('locale', $locale);
+        
+        if($useCurrentLocale){
+            $qb->select('a,t')
+                ->leftJoin('a.translations', 't')
+                ->where('t.locale = :locale')
+                ->setParameter('locale', $locale);
+        } else {
+            $qb->select('a');
+        }
+            
 
         foreach ($criteria as $key => $value) {
             $qb->andWhere("a.$key = :$key");

@@ -147,6 +147,20 @@ class Article extends TimestampableArticle implements TranslatedArticleInterface
     public function translate($locale)
     {
         $translation = $this->getTranslation($locale);
+        
+        if ($translation->getTitle() === null) {
+            foreach ($this->translations as $tmpTranslation) {
+                if ($tmpTranslation->getTitle() !== null) {
+                    $translation = $tmpTranslation;
+                    break; 
+                }
+            }
+            
+            if ($translation->getTitle() === null){
+                return false;
+            }
+        
+        }
         $this->title = $translation->getTitle();
         $this->shortDesc = $translation->getShortDesc();
         $this->slug = $translation->getSlug();
