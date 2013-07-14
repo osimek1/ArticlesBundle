@@ -23,14 +23,27 @@ class ArticleManager
     }
 
 
-    public function createArticle()
+    public function createArticle($onlyCurrentLocale=false, $differentClass)
     {
-        $article = new Article();
-        foreach ($this->languages as $key => $value) {
+        $article = null;
+        if (isset($differentClass)) {
+            $article = new $differentClass();    
+        } else {
+            $article = new Article();
+        }
+        
+        if ($onlyCurrentLocale) {
             $artTranslation = new ArticleTranslation();
             $artTranslation->setArticle($article);
-            $artTranslation->setLocale($key);
+            $artTranslation->setLocale($this->getCurrentLocale());
             $article->addTranslation($artTranslation);
+        } else {
+            foreach ($this->languages as $key => $value) {
+                $artTranslation = new ArticleTranslation();
+                $artTranslation->setArticle($article);
+                $artTranslation->setLocale($this->getCurrentLocale());
+                $article->addTranslation($artTranslation);
+            }    
         }
         
         $article = $this->translateArticle($article);
@@ -80,7 +93,7 @@ class ArticleManager
     }
 
 
-    protected function getCurrentLocale()
+    public function getCurrentLocale()
     {
         $locale = $this->container->get('session')->get('_locale');
         $locale = isset($locale) ? $locale : $this->defaultLocale;
