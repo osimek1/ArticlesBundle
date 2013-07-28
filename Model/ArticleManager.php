@@ -138,8 +138,17 @@ class ArticleManager
         foreach ($orderBy as $key => $value) {
             $qb->orderBy("a.$key", $value);
         }
+        
+        $articlesQuery = $qb->getQuery();
+        
+        if (isset($limit)){
+            $articlesQuery->setMaxResults($limit);
+        }
+        if (isset($offset)){
+            $articlesQuery->setFirstResult($offset);
+        } 
 
-        $articles = $qb->getQuery()->getResult();
+        $articles = $articlesQuery->getResult();
         foreach ($articles as $key => $article) {
             $articles[$key] = $this->translateArticle($article);
         }
