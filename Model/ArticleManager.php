@@ -251,4 +251,14 @@ class ArticleManager
 
         return $articles;
     }
+    
+    public function countArticles($criteria, $repository = 'Osimek1ArticlesBundle:Article')
+    {
+        $qb = $this->em->getRepository($repository)->createQueryBuilder('a')->select('count(a.id)');
+        foreach ($criteria as $key => $value) {
+            $qb->andWhere("a.$key = $value");
+        }
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+    
 }
