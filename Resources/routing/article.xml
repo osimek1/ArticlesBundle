@@ -7,4 +7,7 @@
     <route id="osimek1_articles_homepage" pattern="/article/{slug}">
         <default key="_controller">Osimek1ArticlesBundle:Article:show</default>
     </route>
+    <route id="osimek1_articles_get_rest" pattern="/rest/article/{slug}">
+        <default key="_controller">Osimek1ArticlesBundle:Article:getArticleRest</default>
+    </route>
 </routes>
