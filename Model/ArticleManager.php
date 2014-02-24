@@ -27,7 +27,7 @@ class ArticleManager
     {
         $article = null;
         if (isset($differentClass)) {
-            $article = new $differentClass();    
+            $article = new $differentClass();
         } else {
             $article = new Article();
         }
@@ -212,7 +212,6 @@ class ArticleManager
         }
 
         $article = $this->translateArticle($article);
- 
         return $article;
     }
 
@@ -260,5 +259,4 @@ class ArticleManager
         }
         return $qb->getQuery()->getSingleScalarResult();
     }
-    
 }
