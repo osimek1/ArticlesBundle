@@ -78,6 +78,10 @@ class ArticleManager
         return $art;
     }
 
+    public function translate($article) {
+        return $this->translateArticle($article);
+    }
+
 
     protected function translateArticle($article, $locale = null)
     {
