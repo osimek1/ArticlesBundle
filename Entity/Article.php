@@ -8,6 +8,7 @@ use Osimek1\ArticlesBundle\Model\NestedObjectInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Translated article class
@@ -82,6 +83,7 @@ class Article extends TimestampableArticle implements TranslatedArticleInterface
 
     /**
      * @var string
+     * @Assert\NotNull()
      */
     protected $title;
 
@@ -97,6 +99,7 @@ class Article extends TimestampableArticle implements TranslatedArticleInterface
 
     /**
      * @var string
+     * @Assert\NotNull()
      */
     protected $slug;
 

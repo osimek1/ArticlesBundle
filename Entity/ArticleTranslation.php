@@ -28,7 +28,6 @@ class ArticleTranslation extends BaseArticle implements ArticleTranslationInterf
     /**
      * @var string
      * @ORM\Column(type="string", length=5)
-     * @Assert\NotNull()
      */
     protected $locale;
 
@@ -36,7 +35,6 @@ class ArticleTranslation extends BaseArticle implements ArticleTranslationInterf
      * @var string
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Gedmo\Slug(fields={"title"})
-     * @Assert\NotNull()
      */
     protected $slug;
 
