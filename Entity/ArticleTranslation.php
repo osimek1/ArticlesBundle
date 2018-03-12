@@ -7,7 +7,6 @@ use Osimek1\ArticlesBundle\Model\ArticleTranslationInterface;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 
-
 /**
  * Article translation class
  *
@@ -72,7 +71,7 @@ class ArticleTranslation extends BaseArticle implements ArticleTranslationInterf
 
     /**
      * @param $string
-     * 
+     *
      * @return ArticleTranslation
      */
     public function setLocale($locale)

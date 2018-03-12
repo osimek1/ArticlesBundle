@@ -21,9 +21,9 @@ interface TranslatedArticleInterface extends ArticleInterface
      */
     public function getTranslation($locale);
     
-     /**
-     * {@inheritDoc}
-     */
+    /**
+    * {@inheritDoc}
+    */
     public function getCreatedAt();
     
     /**

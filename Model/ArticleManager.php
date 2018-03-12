@@ -43,7 +43,7 @@ class ArticleManager
                 $artTranslation->setArticle($article);
                 $artTranslation->setLocale($this->getCurrentLocale());
                 $article->addTranslation($artTranslation);
-            }    
+            }
         }
         
         $article = $this->translateArticle($article);
@@ -78,7 +78,8 @@ class ArticleManager
         return $art;
     }
 
-    public function translate($article) {
+    public function translate($article)
+    {
         return $this->translateArticle($article);
     }
 
@@ -101,7 +102,7 @@ class ArticleManager
     {
         $locale = $this->container->get('session')->get('_locale');
         $locale = isset($locale) ? $locale : $this->defaultLocale;
-        if(!array_key_exists($locale, $this->languages)){
+        if (!array_key_exists($locale, $this->languages)) {
             throw new \Exception("No translations found for locale: $locale");
         }
         
@@ -124,7 +125,7 @@ class ArticleManager
 
         $qb = $this->em->getRepository($repository)->createQueryBuilder('a');
         
-        if($useCurrentLocale){
+        if ($useCurrentLocale) {
             $qb->select('a,t')
                 ->leftJoin('a.translations', 't')
                 ->where('t.locale = :locale')
@@ -145,12 +146,12 @@ class ArticleManager
         
         $articlesQuery = $qb->getQuery();
         
-        if (isset($limit)){
+        if (isset($limit)) {
             $articlesQuery->setMaxResults($limit);
         }
-        if (isset($offset)){
+        if (isset($offset)) {
             $articlesQuery->setFirstResult($offset);
-        } 
+        }
 
         $articles = $articlesQuery->getResult();
         foreach ($articles as $key => $article) {
