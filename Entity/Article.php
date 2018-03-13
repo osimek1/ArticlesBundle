@@ -13,7 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Translated article class
  *
- * @author Grzegorz Osimowicz <osimek1@gmail.com> 
+ * @author Grzegorz Osimowicz <osimek1@gmail.com>
  * @ORM\HasLifecycleCallbacks()
  * @ORM\Table()
  * @Gedmo\Tree(type="nested")
@@ -76,7 +76,7 @@ class Article extends TimestampableArticle implements TranslatedArticleInterface
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="Osimek1\ArticlesBundle\Entity\ArticleTranslation", 
+     * @ORM\OneToMany(targetEntity="Osimek1\ArticlesBundle\Entity\ArticleTranslation",
                       mappedBy="article", cascade={"all"})
      */
     protected $translations;
@@ -105,7 +105,7 @@ class Article extends TimestampableArticle implements TranslatedArticleInterface
 
 
     /**
-     * @return 
+     * @return
      */
     public function getTranslations()
     {
@@ -155,14 +155,13 @@ class Article extends TimestampableArticle implements TranslatedArticleInterface
             foreach ($this->translations as $tmpTranslation) {
                 if ($tmpTranslation->getTitle() !== null) {
                     $translation = $tmpTranslation;
-                    break; 
+                    break;
                 }
             }
             
-            if ($translation->getTitle() === null){
+            if ($translation->getTitle() === null) {
                 return false;
             }
-        
         }
         $this->title = $translation->getTitle();
         $this->shortDesc = $translation->getShortDesc();

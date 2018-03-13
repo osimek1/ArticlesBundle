@@ -54,7 +54,6 @@ class ArticleManagerTest extends WebTestCase
 
         $translation = $articleFromDB->getTranslation('unknown');
         $this->assertTrue(is_object($translation));
-
     }
 
     protected function generateRandomPolishText($textLength)
